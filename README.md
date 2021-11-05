@@ -1,4 +1,4 @@
-# Concurrency
-Collection Python programs on Threading and Multi-Processing 
-Usecase Convered
-     Simple File Downloader -  Semaphore
+## Concurrency ##
+Sample Python programs/utility based on Threading and Multi-Processing 
+ * Sample Projects
+      *  Simple File Downloader -  Semaphore
