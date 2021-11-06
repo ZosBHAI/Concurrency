@@ -3,7 +3,9 @@ import requests
 
 """
  -   A thread will be created for each file 
- -    Uses Semaphore for preserving the 
+ -   Things learned 
+ - Daemon when False, thread will be active till the main program is alive 
+ - Need for join  
 
 
 
@@ -30,7 +32,7 @@ class FileDownloader():
         if not os.path.isfile(filepath):
             self.download_new_file(link, filepath, session)
         else:
-            print('else')
+
             current_bytes = os.stat(filepath).st_size
 
             headers = requests.head(link).headers
@@ -69,13 +71,13 @@ class FileDownloader():
             request = session.get(link, stream=True)
             self.write_file(request, filepath, 'wb')
 
-    def continue_file_download(self, link, filepath, current_bytes, total_bytes):
+    def continue_file_download(self, link, filepath, session,current_bytes, total_bytes):
         print(f"resuming: {filepath}")
         range_header = self.headers.copy()
         range_header['Range'] = f"bytes={current_bytes}-{total_bytes}"
-
+        session = requests.Session()
         try:
-            request = requests.get(link, headers=range_header, timeout=30, stream=True)
+            request = session.get(link, headers=range_header, timeout=30, stream=True)
             self.write_file(request, filepath, 'ab')
         except requests.exceptions.RequestException as e:
             print(e)
@@ -95,8 +97,8 @@ class FileDownloader():
         thread = threading.Thread(target=self.t_getfile, args=(link, filename, session), daemon=True)
         self.thread_instance.append(thread)
         thread.start()
-        for index, t in enumerate(self.thread_instance):
-            t.join()
+        #for index, t in enumerate(self.thread_instance):
+            #t.join()
 
 
 if __name__ == '__main__':
@@ -107,4 +109,9 @@ if __name__ == '__main__':
     for lk in yellow_taxi_data:
         file_name = lk.split("/")[-1]
         dl.get_file(lk, file_name)
+    for _ in range(10):print("Main")
+    for thrd in dl.thread_instance:
+        thrd.join()
+
+    print("downloading completed")
 
