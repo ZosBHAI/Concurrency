@@ -106,7 +106,7 @@ class FileDownloader:
     def start_downloading(self,urls=None,session=None):
         for url in urls:
             print(url)
-            filename = url.split("/")[-1]  #last portion will be  the file name
+            filename = os.path.basename(url)  #last portion will be  the file name
             thread = threading.Thread(target=self.t_getfile, args=(url, filename, session), daemon=True)
             self.q.put(self.Item(filename))
             self.thread_instance.append(thread)

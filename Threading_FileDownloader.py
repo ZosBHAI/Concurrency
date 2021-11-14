@@ -106,10 +106,10 @@ if __name__ == '__main__':
                         'https://nyc-tlc.s3.amazonaws.com/trip+data/fhv_tripdata_2021-07.csv',
                         'https://nyc-tlc.s3.amazonaws.com/trip+data/fhv_tripdata_2021-06.csv']
     dl = FileDownloader()
-    for lk in yellow_taxi_data:
-        file_name = lk.split("/")[-1]
-        dl.get_file(lk, file_name)
-    for _ in range(10):print("Main")
+    for link in yellow_taxi_data:
+        file_name = os.path.basename(link)
+        dl.get_file(link, file_name)
+
     for thrd in dl.thread_instance:
         thrd.join()
 
